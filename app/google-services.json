@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "953001684128",
+    "project_id": "garbapp-ab823",
+    "storage_bucket": "garbapp-ab823.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953001684128:android:78a8dc2f8c90b58f92edc5",
+        "android_client_info": {
+          "package_name": "be.ehb.garbapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "953001684128-ucpuhitloljdpoumh1cv15cb7u84cpup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "be.ehb.garbapp",
+            "certificate_hash": "cd5b0d56565ff77b2fa9eade35087b6b9a3c27dc"
+          }
+        },
+        {
+          "client_id": "953001684128-ms56g63j20qev43k2u5febj0n7vfcccj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-OzJ3l-OXQ2Qf-NRI-dMGjdQZ7q2Xub4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "953001684128-ms56g63j20qev43k2u5febj0n7vfcccj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:id="@+id/Home"
+        android:icon="@drawable/ic_baseline_home_24"/>
+    <item android:title="Ranking"
+        android:id="@+id/Ranking"
+        android:icon="@drawable/ic_baseline_format_list_numbered_24"/>
+    <item android:title="Report"
+        android:id="@+id/Repost"
+        android:icon="@drawable/ic_baseline_upload_24"/>
+    <item android:title="Dashboard"
+        android:id="@+id/Dashboard"
+        android:icon="@drawable/ic_baseline_dashboard_24"/>
+    <item android:title="Profile"
+        android:id="@+id/Profile"
+        android:icon="@drawable/ic_baseline_person_24"/>
+</menu>

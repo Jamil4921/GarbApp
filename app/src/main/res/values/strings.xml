@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">GarbApp</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="Login">Login</string>
+    <string name="Register">Register</string>
+    <string name="First_Name">First name</string>
+    <string name="Last_Name">Last name</string>
+    <string name="log_out">logout</string>
+    <string name="nav_pokemon">all pokemons</string>
+    <string name="nav_raids">All raids</string>
+    <string name="show_map">Map</string>
+    <string name="All_Pokemon">All pokemon spotting</string>
+    <string name="What_pokemon">What Pokemon did you see in this area</string>
+    <string name="Pokemon_name">Pokemon</string>
+    <string name="Add_Pokemon">Add pokemo,</string>
+    <string name="add_Pokemon">Add Pokemon</string>
+    <string name="Location">Location</string>
+    <string name="Address">Address</string>
+    <string name="what_raid">Post raid</string>
+    <string name="Raid_lvl">Raid Level</string>
+    <string name="Trainer_code">Trainer Code</string>
+    <string name="add_raid">Add Raid</string>
+    <string name="cancel">Cancel</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
