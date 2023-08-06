@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -14,17 +15,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+
+import java.util.UUID;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     private FirebaseAuth mAuth;
     private TextView registerUser, loginUser;
-    private EditText editText_firstName, editText_lastName, editText_Email, editText_Password;
+    private EditText editText_name, editText_Email, editText_Password;
     private Button addProfilePicButton;
     private ImageView imageView_profile_picture;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -32,6 +45,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Initialize Picasso with a custom OkHttp3Downloader to handle HTTPS images
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.downloader(new OkHttp3Downloader(this, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        built.setIndicatorsEnabled(true); // Optional: Show Picasso indicator for debugging
+        built.setLoggingEnabled(true); // Optional: Enable logging for debugging
+        Picasso.setSingletonInstance(built);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -42,8 +63,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         registerUser.setOnClickListener(this);
         addProfilePicButton.setOnClickListener(this);
 
-        editText_firstName = (EditText) findViewById(R.id.et_FirstName);
-        editText_lastName = (EditText) findViewById(R.id.et_LastName);
+        editText_name = (EditText) findViewById(R.id.et_name);
         editText_Email = (EditText) findViewById(R.id.et_Email);
         editText_Password = (EditText) findViewById(R.id.et_Password);
         imageView_profile_picture = (ImageView) findViewById(R.id.imageView_profile_picture);
@@ -64,38 +84,80 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.button_add_profile_picture:
-                startActivityForResult(new Intent(this, UploadProfilePictureActivity.class), PICK_IMAGE_REQUEST);
+                openImagePicker();
                 break;
         }
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            // Retrieve the image URL from the returned Intent and display the image
-            String imageUrl = data.getStringExtra("image_url");
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                Picasso.with(this).load(imageUrl).into(imageView_profile_picture);
-            }
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            // Upload the image to Firebase Storage
+            uploadImageToFirebase(imageUri);
+        }
+    }
+
+    private void uploadImageToFirebase(Uri imageUri) {
+        // Generate a random filename for the image (you can use the user's UID as well)
+        String filename = UUID.randomUUID().toString();
+
+        // Reference to the Firebase Storage location where the image will be stored
+        StorageReference storageRef = FirebaseStorage.getInstance("gs://garbapp-ab823.appspot.com").getReference("profile_pictures/" + filename);
+
+        // Upload the image to Firebase Storage
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Get the download URL of the image after it's uploaded
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        // Save the image URL to the user's profile data in the Realtime Database
+                        saveImageUrlToUserProfile(imageUrl);
+                    }).addOnFailureListener(e -> {
+                        // Handle any errors in getting the download URL
+                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors in uploading the image
+                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void saveImageUrlToUserProfile(String imageUrl) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            DatabaseReference referenceProfile = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Registered User");
+            referenceProfile.child(firebaseUser.getUid()).child("profilePictureUrl").setValue(imageUrl)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Image URL is saved successfully in the user's profile data
+                            Toast.makeText(RegisterActivity.this, "Profile picture updated", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle any errors in saving the image URL
+                            Toast.makeText(RegisterActivity.this, "Failed to save profile picture", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
     private void registerUser() {
-        String firstName = editText_firstName.getText().toString().trim();
-        String lastName = editText_lastName.getText().toString().trim();
+
+        String name = editText_name.getText().toString().trim();
         String email = editText_Email.getText().toString().trim();
         String password = editText_Password.getText().toString().trim();
 
-        if(firstName.isEmpty()){
-            editText_firstName.setError("First name is required");
-            editText_firstName.requestFocus();
-            return;
-        }
-
-        if(lastName.isEmpty()){
-            editText_lastName.setError("Last name is required");
-            editText_lastName.requestFocus();
+        if(name.isEmpty()){
+            editText_name.setError("user name is required");
+            editText_name.requestFocus();
             return;
         }
 
@@ -127,11 +189,27 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "User has been registered succesfully", Toast.LENGTH_LONG).show();
-                            showMainActivity();
-                        }else{
-                            Toast.makeText(RegisterActivity.this, "Failed to registered User try again", Toast.LENGTH_LONG).show();
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            String profilePictureUrl = null; // Set it to null for now
+                            GarbUser garbUser = new GarbUser(name, email, profilePictureUrl);
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            firebaseUser.updateProfile(profileUpdates);
+                            DatabaseReference referenceProfile = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Registered User");
+                            referenceProfile.child(firebaseUser.getUid()).setValue(garbUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(RegisterActivity.this, "User has been registered successfully", Toast.LENGTH_LONG).show();
+                                        showMainActivity();
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, "Failed to register User. Please try again", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Failed to register User. Please try again", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

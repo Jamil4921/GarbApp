@@ -22,6 +22,9 @@
     <string name="Trainer_code">Trainer Code</string>
     <string name="add_raid">Add Raid</string>
     <string name="cancel">Cancel</string>
+    <string name="open">Open navigation</string>
+    <string name="close">Close navigation</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Profile_name" />
 </resources>

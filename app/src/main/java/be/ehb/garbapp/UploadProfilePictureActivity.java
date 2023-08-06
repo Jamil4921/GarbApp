@@ -51,7 +51,7 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
 
         Uri uri = firebaseUser.getPhotoUrl();
 
-        Picasso.with(UploadProfilePictureActivity.this).load(uri).into(imageViewUploadPic);
+        //Picasso.with(UploadProfilePictureActivity.this).load(uri).into(imageViewUploadPic);
 
         buttonUploadPicChoose.setOnClickListener(new View.OnClickListener() {
             @Override
