@@ -60,6 +60,7 @@ import be.ehb.garbapp.databinding.FragmentReportBinding;
 
 public class ReportFragment extends Fragment {
 
+
     private FragmentReportBinding binding;
     private EditText editText_Title, editText_description;
     private Button add_picture, report_trash;
