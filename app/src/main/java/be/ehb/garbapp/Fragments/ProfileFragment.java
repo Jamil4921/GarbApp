@@ -5,6 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +27,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import be.ehb.garbapp.Adapter.ReportAdapter;
 import be.ehb.garbapp.GarbUser;
 import be.ehb.garbapp.R;
+import be.ehb.garbapp.Report;
+import be.ehb.garbapp.ViewModel.ReportViewModel;
 import be.ehb.garbapp.databinding.FragmentMapBinding;
 import be.ehb.garbapp.databinding.FragmentProfileBinding;
 
@@ -58,6 +67,20 @@ public class ProfileFragment extends Fragment {
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
 
         showUserProfile(firebaseUser);
+
+        ReportViewModel reportViewModel = new ViewModelProvider(getActivity()).get(ReportViewModel.class);
+        ReportAdapter reportAdapter = new ReportAdapter();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        binding.rvRepostList.setAdapter(reportAdapter);
+        binding.rvRepostList.setLayoutManager(layoutManager);
+        reportViewModel.getReportsByUser(firebaseUser.getUid()).observe(getViewLifecycleOwner(), new Observer<List<Report>>() {
+            @Override
+            public void onChanged(List<Report> reportList) {
+                reportAdapter.addItems(reportList);
+            }
+        });
+
+
         return root;
     }
 

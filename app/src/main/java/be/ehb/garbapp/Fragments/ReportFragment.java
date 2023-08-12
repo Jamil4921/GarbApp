@@ -67,13 +67,15 @@ public class ReportFragment extends Fragment {
     private DatabaseReference databaseReference;
     private FirebaseAuth authProfile;
     private ImageView imageView_report_trash_preview;
-    private String pictureUrl;
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
-    private final static int REQUEST_CODE = 100;
+    private final static int REQUEST_CODE = 10;
     private double latitude, longitude;
     private String address;
+    private String pictureUrl;
     FusedLocationProviderClient fusedLocationProviderClient;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,9 +112,10 @@ public class ReportFragment extends Fragment {
         return root;
     }
 
+
+
     private void insertTrash() {
         try {
-
             String trashTitle = editText_Title.getText().toString().trim();
             String trashDescription = editText_description.getText().toString().trim();
 
@@ -128,58 +131,107 @@ public class ReportFragment extends Fragment {
                 return;
             }
 
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakePictureIntent();
-            } else {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-            }
-
             if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                    if(location != null){
-                        askPermission();
-                        Log.d("Location", "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                        try {
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),1);
-                            address = addresses.get(0).getAddressLine(0).toString();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        String userUiD = currentUser.getUid();
-                        String reportUserName = currentUser.getDisplayName();
-                        int postId = generatePostId();
-                        boolean approved = false;
-                        Date createdPost = Calendar.getInstance().getTime();
-                        Report report = new Report(postId, trashTitle, trashDescription, userUiD, reportUserName, approved, createdPost, pictureUrl, location.getLatitude(), location.getLongitude(), address);
-                        Log.d("ReportFragment", "Report : " + trashTitle);
-                        databaseReference = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("reports");
-                        databaseReference.child(String.valueOf(postId)).setValue(report).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(getContext(), "Successfully reposted trash. thank you for contributing. Points will be received once approved by admin", Toast.LENGTH_LONG).show();
-                                    showMainActivity();
-                                }else {
-                                    Toast.makeText(getContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
-                                }
+                        if(location != null){
+                            askPermission();
+                            Log.d("Location", "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
+                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),1);
+                                address = addresses.get(0).getAddressLine(0).toString();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
+                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                            String userUiD = currentUser.getUid();
+                            String reportUserName = currentUser.getDisplayName();
+                            int postId = generatePostId();
+                            boolean approved = false;
+                            Date createdPost = Calendar.getInstance().getTime();
 
-                    }
+                            Report report = new Report(postId, trashTitle, trashDescription, userUiD, reportUserName, approved, createdPost, pictureUrl, location.getLatitude(), location.getLongitude(), address);
+                            Log.d("ReportFragment", "Report : " + pictureUrl);
+                            databaseReference = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("reports");
+                            databaseReference.child(String.valueOf(postId)).setValue(report).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(getContext(), "Successfully reposted trash. thank you for contributing. Points will be received once approved by admin", Toast.LENGTH_LONG).show();
+                                        showMainActivity();
+                                    }else {
+                                        Toast.makeText(getContext(), "Something went wrong please try again", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                        }
                     }
                 });
             }
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView_report_trash_preview.setImageBitmap(imageBitmap);
+
+            uploadImageToFirebase(imageBitmap);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(requireContext(), "Camera permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+
+
+    private void askPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),new String[]
+                {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+    }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        } else {
+            getLocation();
+        }
+    }
+
+
+    private int generatePostId() {
+        return (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
+    }
+
+    private void showMainActivity(){
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        startActivity(intent);
+
     }
 
     private void uploadImageToFirebase(Bitmap bitmap) {
@@ -207,6 +259,7 @@ public class ReportFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     pictureUrl = downloadUri.toString();
+                    Log.d("UploadImage", "Image URL: " + pictureUrl); // Add this line
                     Toast.makeText(getContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
@@ -214,74 +267,11 @@ public class ReportFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakePictureIntent();
-            } else {
-                Toast.makeText(requireContext(), "Camera permission denied.", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        if(requestCode == REQUEST_CODE){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                return;
-            }else{
-                Toast.makeText(getContext(),"Request Failed", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
-
-    private void askPermission() {
-        ActivityCompat.requestPermissions(requireActivity(),new String[]
-                {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-    }
-
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-        } else {
-            getLocation();
-        }
-    }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView_report_trash_preview.setImageBitmap(imageBitmap);
-
-            uploadImageToFirebase(imageBitmap);
-        }
-    }
-
-    private int generatePostId() {
-        return (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-    }
-
-    private void showMainActivity(){
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        startActivity(intent);
-
-    }
-
 
 }
