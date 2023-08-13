@@ -42,6 +42,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private ImageView imageView_profile_picture;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri selectedImageUri = null;
+    private final int role = 0;
+    private double garbPoints = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             String profilePictureUrl = null; // Set it to null for now
-                            GarbUser garbUser = new GarbUser(name, email, profilePictureUrl);
+                            GarbUser garbUser = new GarbUser(name, email, profilePictureUrl, role);
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                             firebaseUser.updateProfile(profileUpdates);
                             DatabaseReference referenceProfile = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Registered User");

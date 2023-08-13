@@ -94,7 +94,7 @@ public class ReportFragment extends Fragment {
         add_picture = root.findViewById(R.id.report_button_picture);
         report_trash = root.findViewById(R.id.repost_trash);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
-
+        report_trash.setEnabled(false);
         report_trash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +130,7 @@ public class ReportFragment extends Fragment {
                 editText_description.requestFocus();
                 return;
             }
+
 
             if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -182,6 +183,8 @@ public class ReportFragment extends Fragment {
 
 
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -191,6 +194,7 @@ public class ReportFragment extends Fragment {
             imageView_report_trash_preview.setImageBitmap(imageBitmap);
 
             uploadImageToFirebase(imageBitmap);
+            report_trash.setEnabled(true);
         }
     }
 
