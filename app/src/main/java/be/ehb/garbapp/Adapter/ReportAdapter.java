@@ -19,11 +19,21 @@ import be.ehb.garbapp.Report;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder> {
 
+    private OnItemClickListener listener;
+
 
     private ArrayList<Report> reportsList;
 
     public ReportAdapter (){
         reportsList= new ArrayList<>();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Report report);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     public void addItems(List<Report> reportList){
@@ -56,6 +66,8 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position){
 
@@ -75,10 +87,19 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
             holder.approved.setText("Pending");
         }
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(reportsList.get(position));
+            }
+        });
+
     }
+
+
 
     @Override
     public int getItemCount() {
         return reportsList.size();
     }
+
 }

@@ -74,4 +74,28 @@ public class ReportViewModel extends AndroidViewModel {
         return filteredReports;
     }
 
+    public MutableLiveData<List<Report>> getUnapprovedReports() {
+        MutableLiveData<List<Report>> unapprovedReports = new MutableLiveData<>();
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Report> reportList = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Report report = postSnapshot.getValue(Report.class);
+                    if (!report.isApproved()) {
+                        reportList.add(report);
+                    }
+                }
+                unapprovedReports.setValue(reportList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        return unapprovedReports;
+    }
+
 }

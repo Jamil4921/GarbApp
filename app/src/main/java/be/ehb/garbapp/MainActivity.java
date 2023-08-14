@@ -20,11 +20,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import be.ehb.garbapp.Fragments.AdminFragment;
 import be.ehb.garbapp.Fragments.DashboardFragment;
 import be.ehb.garbapp.Fragments.MapFragment;
 import be.ehb.garbapp.Fragments.ProfileFragment;
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.Admin_hamburger:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new AdminFragment()).commit();
                         return true;
                 }
                 return false;
