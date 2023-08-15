@@ -3,15 +3,25 @@ package be.ehb.garbapp;
 public class GarbUser {
     public String name, email, profilePictureUrl;
     public int role;
+    public double totalPoints;
 
     public GarbUser() {
     }
 
-    public GarbUser(String name, String email, String profilePictureUrl, int role) {
+    public GarbUser(String name, String email, String profilePictureUrl, int role, double totalPoints) {
         this.name = name;
         this.email = email;
         this.profilePictureUrl = profilePictureUrl;
         this.role = role;
+        this.totalPoints = totalPoints;
+    }
+
+    public double getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void setTotalPoints(double totalPoints) {
+        this.totalPoints = totalPoints;
     }
 
     public String getName() {

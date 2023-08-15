@@ -98,34 +98,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container,new MapFragment()).commit();
-        BottomNavigationView nav_bottom = findViewById(R.id.BottomNavigationView);
-        nav_bottom.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.Profile:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new ProfileFragment()).commit();
-                        return true;
 
-                    case R.id.Ranking:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new RankingFragment()).commit();
-                        return true;
-
-                    case R.id.Repost:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new ReportFragment()).commit();
-                        return true;
-
-                    case R.id.Dashboard:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new DashboardFragment()).commit();
-                        return true;
-
-                    case R.id.Home:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new MapFragment()).commit();
-                        return true;
-                }
-                return false;
-            }
-        });
 
 
         fetchUserRoleAndInitializeUI();

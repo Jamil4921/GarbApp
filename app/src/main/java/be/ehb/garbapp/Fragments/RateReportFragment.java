@@ -2,6 +2,8 @@ package be.ehb.garbapp.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,12 +24,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 import be.ehb.garbapp.Adapter.ReportAdapter;
+import be.ehb.garbapp.GarbUser;
 import be.ehb.garbapp.R;
 import be.ehb.garbapp.Report;
 import be.ehb.garbapp.ViewModel.ReportViewModel;
@@ -177,7 +186,7 @@ public class RateReportFragment extends Fragment {
 
     }
 
-    public void approveReport(Report report){
+    public void approveReport(Report report) {
         databaseReference = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("reports");
         DatabaseReference reportRef = databaseReference.child(String.valueOf(report.getPostId()));
         report.setApproved(true);
@@ -185,10 +194,39 @@ public class RateReportFragment extends Fragment {
 
         reportRef.setValue(report);
 
-        Toast.makeText(getContext(), "Successfully approved report ", Toast.LENGTH_LONG).show();
+        updateUserTotalPoints(report.getUserUid()); // Move this line up
 
-        showAdminFragment();
+        Toast.makeText(getContext(), "Successfully approved report ", Toast.LENGTH_LONG).show();
     }
+
+    private void updateUserTotalPoints(String userUid) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Registered User").child(userUid);
+        DatabaseReference reportsRef = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("reports");
+
+        reportsRef.orderByChild("userUid").equalTo(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                double totalPoints = 0.0;
+
+                for (DataSnapshot reportSnapshot : dataSnapshot.getChildren()) {
+                    Report report = reportSnapshot.getValue(Report.class);
+                    if (report != null) {
+                        totalPoints += report.getGarbPoints();
+                    }
+                }
+
+                userRef.child("totalPoints").setValue(totalPoints);
+                showAdminFragment();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("RateReportFragment", "Error fetching reports: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
 
     public void showAdminFragment(){
         AdminFragment adminFragment = new AdminFragment();

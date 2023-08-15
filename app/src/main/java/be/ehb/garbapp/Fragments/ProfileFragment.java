@@ -40,8 +40,9 @@ import be.ehb.garbapp.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView TvprofileName;
+    private TextView TvprofileName, TvtotalPoints;
     private String name;
+    private String totalPoints;
     private ImageView profile_image;
     private FirebaseAuth authProfile;
     private FragmentProfileBinding binding;
@@ -62,6 +63,7 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         TvprofileName = root.findViewById(R.id.profile_name);
+        TvtotalPoints = root.findViewById(R.id.profile_totalpoints);
         profile_image = root.findViewById(R.id.imageView_profile);
         authProfile = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
@@ -94,9 +96,13 @@ public class ProfileFragment extends Fragment {
                 if (garbUser != null) {
 
                     name = firebaseUser.getDisplayName();
+
                     Log.d("ProfileFragment", "User's first name: " + name);
 
                     TvprofileName.setText(name);
+
+                    double totalPoints = garbUser.getTotalPoints();
+                    TvtotalPoints.setText(String.valueOf(totalPoints));
 
                     // Load and display the profile picture using Picasso
                     String profilePictureUrl = garbUser.getProfilePictureUrl();
