@@ -20,6 +20,10 @@
             android:id="@+id/Admin_hamburger"
             android:icon="@drawable/ic_baseline_person_24"
             />
+        <item android:title="Logout"
+            android:id="@+id/Logout_hamburger"
+            android:icon="@drawable/ic_baseline_logout_24"
+            />
 
 
 

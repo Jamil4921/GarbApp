@@ -14,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import be.ehb.garbapp.GarbUser;
@@ -35,20 +37,27 @@ public class GarbUserViewModel extends AndroidViewModel {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<GarbUser> gardUsersList = new ArrayList<>();
+                List<GarbUser> garbUsersList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     GarbUser garbUser = postSnapshot.getValue(GarbUser.class);
-                    gardUsersList.add(garbUser);
-
+                    garbUsersList.add(garbUser);
                 }
-                allGarbUsers.setValue(gardUsersList);
+
+                Collections.sort(garbUsersList, new Comparator<GarbUser>() {
+                    @Override
+                    public int compare(GarbUser user1, GarbUser user2) {
+                        return Double.compare(user2.getTotalPoints(), user1.getTotalPoints());
+                    }
+                });
+
+                allGarbUsers.setValue(garbUsersList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        System.out.println(allGarbUsers.toString());
+
         return allGarbUsers;
     }
 

@@ -135,6 +135,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.Admin_hamburger:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new AdminFragment()).commit();
                         return true;
+
+                    case R.id.Logout_hamburger:
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        authProfile.signOut();
+                        break;
                 }
                 return false;
             }

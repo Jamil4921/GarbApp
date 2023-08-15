@@ -25,19 +25,19 @@
 
 
 
-    <FrameLayout
-        android:id="@+id/maps"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <FrameLayout
+            android:id="@+id/maps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/activity_main" />
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/activity_main" />
+
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
