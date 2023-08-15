@@ -13,12 +13,13 @@ public class Report {
     public String address;
     public double lati;
     public double longti;
+    public double garbPoints;
 
 
     public Report() {
     }
 
-    public Report(int postId, String title, String description, String userUid, String repostUserName, boolean approved, Date createdPost, String pictureUrl, double lati, double longti, String address) {
+    public Report(int postId, String title, String description, String userUid, String repostUserName, boolean approved, Date createdPost, String pictureUrl, double lati, double longti, String address, double garbPoints) {
         this.postId = postId;
         this.title = title;
         this.description = description;
@@ -30,7 +31,17 @@ public class Report {
         this.lati = lati;
         this.longti = longti;
         this.address = address;
+        this.garbPoints = garbPoints;
 
+    }
+
+
+    public double getGarbPoints() {
+        return garbPoints;
+    }
+
+    public void setGarbPoints(double garbPoints) {
+        this.garbPoints = garbPoints;
     }
 
     public int getPostId() {

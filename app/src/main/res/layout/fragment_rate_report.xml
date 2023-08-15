@@ -17,7 +17,7 @@
             android:id="@+id/rate_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="368dp"
+            android:layout_marginTop="328dp"
             android:text="Title"
             android:textColor="#FF0000"
             android:textSize="24sp"
@@ -30,12 +30,12 @@
             android:id="@+id/rate_postid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="408dp"
+            android:layout_marginTop="368dp"
             android:text="PostId"
             android:textColor="#FF0000"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.624"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,11 +43,109 @@
             android:id="@+id/rate_imageView"
             android:layout_width="189dp"
             android:layout_height="199dp"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="52dp"
             app:layout_constraintBottom_toTopOf="@+id/rate_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:src="@tools:sample/avatars" />
+
+
+        <Button
+            android:id="@+id/rate_btn_approve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="65dp"
+            android:layout_marginBottom="52dp"
+            android:text="Approve"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/rate_btn_remove" />
+
+        <Button
+            android:id="@+id/rate_btn_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="52dp"
+            android:text="Remove report"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="56dp"
+            android:text="PostId :"
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/rate_postid"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="43dp"
+            android:text="Title : "
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/rate_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rate_imageView" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rate_postid">
+
+            <RadioButton
+                android:id="@+id/radioSmallTrash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="5dp"
+                android:checked="true"
+                android:text="Small trash"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/radioMediumTrash"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <RadioButton
+                android:id="@+id/radioMediumTrash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:text="Medium trash"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioSmallTrash" />
+
+            <RadioButton
+                android:id="@+id/radioLargeTrash"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:text="Large trash"
+                android:textColor="#FF0000"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioMediumTrash" />
+
+        </RadioGroup>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

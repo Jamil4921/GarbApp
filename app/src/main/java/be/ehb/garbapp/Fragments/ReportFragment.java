@@ -74,6 +74,7 @@ public class ReportFragment extends Fragment {
     private double latitude, longitude;
     private String address;
     private String pictureUrl;
+    private double garbPoints = 0.0;
     FusedLocationProviderClient fusedLocationProviderClient;
 
 
@@ -153,7 +154,7 @@ public class ReportFragment extends Fragment {
                             boolean approved = false;
                             Date createdPost = Calendar.getInstance().getTime();
 
-                            Report report = new Report(postId, trashTitle, trashDescription, userUiD, reportUserName, approved, createdPost, pictureUrl, location.getLatitude(), location.getLongitude(), address);
+                            Report report = new Report(postId, trashTitle, trashDescription, userUiD, reportUserName, approved, createdPost, pictureUrl, location.getLatitude(), location.getLongitude(), address, garbPoints);
                             Log.d("ReportFragment", "Report : " + pictureUrl);
                             databaseReference = FirebaseDatabase.getInstance("https://garbapp-ab823-default-rtdb.europe-west1.firebasedatabase.app/").getReference("reports");
                             databaseReference.child(String.valueOf(postId)).setValue(report).addOnCompleteListener(new OnCompleteListener<Void>() {
