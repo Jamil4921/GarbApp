@@ -51,7 +51,6 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
 
         Uri uri = firebaseUser.getPhotoUrl();
 
-        //Picasso.with(UploadProfilePictureActivity.this).load(uri).into(imageViewUploadPic);
 
         buttonUploadPicChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +99,6 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
                                     .setPhotoUri(downloaduri).build();
                             firebaseUser.updateProfile(profileChangeRequest);
 
-                            // Pass the image URL back to RegisterActivity
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("image_url", downloaduri.toString());
                             setResult(RESULT_OK, returnIntent);

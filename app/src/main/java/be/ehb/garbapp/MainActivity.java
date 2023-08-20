@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import be.ehb.garbapp.Fragments.AchievementFragment;
 import be.ehb.garbapp.Fragments.AdminFragment;
 import be.ehb.garbapp.Fragments.DashboardFragment;
 import be.ehb.garbapp.Fragments.MapFragment;
@@ -130,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.Home_hamburger:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new MapFragment()).commit();
+                        return true;
+
+                    case R.id.Achievement_hamburger:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new AchievementFragment()).commit();
                         return true;
 
                     case R.id.Admin_hamburger:

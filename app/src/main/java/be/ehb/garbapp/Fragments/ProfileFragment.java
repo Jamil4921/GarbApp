@@ -104,7 +104,6 @@ public class ProfileFragment extends Fragment {
                     double totalPoints = garbUser.getTotalPoints();
                     TvtotalPoints.setText(String.valueOf(totalPoints));
 
-                    // Load and display the profile picture using Picasso
                     String profilePictureUrl = garbUser.getProfilePictureUrl();
                     if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                         Picasso.get().load(profilePictureUrl).into(profile_image);

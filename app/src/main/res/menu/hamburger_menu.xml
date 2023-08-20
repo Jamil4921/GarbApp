@@ -13,6 +13,10 @@
         <item android:title="Dashboard"
             android:id="@+id/Dashboard_hamburger"
             android:icon="@drawable/ic_baseline_dashboard_24"/>
+        <item android:title="Achievement"
+            android:id="@+id/Achievement_hamburger"
+            android:icon="@drawable/ic_baseline_trending_up_24"
+            />
         <item android:title="Profile"
             android:id="@+id/Profile_hamburger"
             android:icon="@drawable/ic_baseline_person_24"/>
@@ -24,7 +28,6 @@
             android:id="@+id/Logout_hamburger"
             android:icon="@drawable/ic_baseline_logout_24"
             />
-
 
 
 </menu>

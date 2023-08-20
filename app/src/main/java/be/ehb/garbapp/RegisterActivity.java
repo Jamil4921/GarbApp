@@ -50,12 +50,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize Picasso with a custom OkHttp3Downloader to handle HTTPS images
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.downloader(new OkHttp3Downloader(this, Integer.MAX_VALUE));
         Picasso built = builder.build();
-        built.setIndicatorsEnabled(true); // Optional: Show Picasso indicator for debugging
-        built.setLoggingEnabled(true); // Optional: Enable logging for debugging
+        built.setIndicatorsEnabled(true);
+        built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
 
         mAuth = FirebaseAuth.getInstance();
